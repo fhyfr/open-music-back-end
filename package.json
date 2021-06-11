@@ -19,6 +19,7 @@
   "homepage": "https://github.com/fhyfr/open-music-back-end#readme",
   "dependencies": {
     "@hapi/hapi": "^20.1.4",
-    "nanoid": "^2.1.8"
+    "nanoid": "^2.1.8",
+    "pg": "^8.6.0"
   }
 }
