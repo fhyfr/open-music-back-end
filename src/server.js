@@ -1,20 +1,32 @@
+// DOTE ENV
+require('dotenv').config();
+
 const Hapi = require('@hapi/hapi');
+const SongsService = require('./services/postgre/SongsService');
+const SongsValidator = require('./validator/songs');
 
 const init = async () => {
+  const songsService = new SongsService();
+  const server = Hapi.server({
+    port: process.env.PORT,
+    host: process.env.HOST,
+    routes: {
+      cors: {
+        origin: ['*'],
+      },
+    },
+  });
 
-    const server = Hapi.server({
-        port: 5000,
-        host: 'localhost'
-    });
+  await server.register({
+    plugin: sessionStorage,
+    options: {
+      service: songsService,
+      validator: SongsValidator,
+    },
+  });
 
-    await server.start();
-    console.log('Server running on %s', server.info.uri);
+  await server.start();
+  console.log(`Server berjalan pada ${server.info.uri}`);
 };
-
-process.on('unhandledRejection', (err) => {
-
-    console.log(err);
-    process.exit(1);
-});
 
 init();

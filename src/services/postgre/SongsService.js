@@ -1,5 +1,8 @@
-const { Pool } = require('pg');
-
+const { nanoid } = require("nanoid");
+const { Pool } = require("pg");
+const InvariantError = require("../../exceptions/InvariantError");
+const NotFoundError = require("../../exceptions/NotFoundError");
+const { mapDBToModel } = require("../../utils");
 
 class SongsService {
   constructor() {
@@ -7,7 +10,8 @@ class SongsService {
   }
 
   async addSong({ title, year, performer, genre, duration }) {
-    const id = nanoid(16);
+    const uniqueId = nanoid(16);
+    const id = `song-${uniqueId}`;
     const insertedAt = new Date().toISOString();
     const updatedAt = insertedAt;
 
@@ -25,6 +29,11 @@ class SongsService {
     return result.rows[0].id;
   }
 
-  
+  async getSongs() {
+    const result = await this._pool.query('SELECT * FROM songs');
 
+    return result.rows.map(mapDBToModel);
+  }
 }
+
+module.exports = SongsService;
