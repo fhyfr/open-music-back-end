@@ -1,5 +1,5 @@
 // DOTE ENV
-require('dotenv').config();
+require("dotenv").config();
 
 const Hapi = require('@hapi/hapi');
 const songs = require('./api/songs')
