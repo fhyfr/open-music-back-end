@@ -38,17 +38,131 @@ class SongsHandler {
         console.error(error);
         response.code(error.statusCode);
         return response;
+      }
 
-        // server error
+      // server error
+      const response = h.response({
+        status: 'error',
+        message: 'Server error, coba lagi beberapa saat.',
+      });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
+  }
+
+  async getSongsHandler() {
+    const result = await this._service.getSongs();
+    const songs = result.map((x)=>({
+      id: x.id,
+      title: x.title,
+      performer: x.performer,
+    }));
+
+    return {
+      status: 'success',
+      data: {
+        songs,
+      },
+    };
+  }
+
+  async getSongByIdHandler(request, h) {
+    try {
+      const { songId }  = request.params;
+      const song = await this._service.getSongById(songId);
+      return {
+        status: 'success',
+        data: {
+          song,
+        },
+      };
+    } catch (error) {
+      if(error instanceof UserError) {
         const response = h.response({
-          status: 'error',
-          message: 'Server error, coba lagi beberapa saat.',
+          status: 'fail',
+          message: error.message,
+        });
+        console.error(error);
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // server error
+      const response = h.response({
+        status: 'error',
+        message: 'Server error, coba lagi beberapa saat.',
+        });
+      response.code(500);
+      console.error(error);
+      return response;
+    }
+  }
+  
+  async putSongByIdHandler(request, h) {
+    try {
+      this._validator.validateSongPayload(request.payload);
+      const { title, year, performer, genre, duration } = request.payload;
+      const { songId } = request.params;
+
+      await this._service.editSongById(songId, { title, year, performer, genre, duration });
+
+      return {
+        status: 'success',
+        message: 'lagu berhasil diperbarui'
+      };
+    } catch (error) {
+      if(error instanceof UserError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        console.error(error);
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // server error
+      const response = h.response({
+        status: 'error',
+        message: 'Server error, coba lagi beberapa saat.',
         });
         response.code(500);
         console.error(error);
         return response;
       }
-    }
+  }
+
+  async deleteSongByIdHandler(request, h) {
+    try {
+      const { songId } = request.params;
+      await this._service.deleteSongById(songId);
+
+      return {
+        status: 'success',
+        message: 'lagu berhasil dihapus',
+      };
+
+    } catch (error) {
+      if(error instanceof UserError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        console.error(error);
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // server error
+      const response = h.response({
+        status: 'error',
+        message: 'Server error, coba lagi beberapa saat.',
+        });
+        response.code(500);
+        console.error(error);
+        return response;
+      }
   }
 }
 
