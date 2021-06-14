@@ -1,4 +1,5 @@
 const UserError = require('../../exceptions/UserError');
+const { mapSongs } = require('../../utils/index')
 
 class SongsHandler {
   constructor(service, validator) {
@@ -53,11 +54,7 @@ class SongsHandler {
 
   async getSongsHandler() {
     const result = await this._service.getSongs();
-    const songs = result.map((x)=>({
-      id: x.id,
-      title: x.title,
-      performer: x.performer,
-    }));
+    const songs = result.map(mapSongs);
 
     return {
       status: 'success',
@@ -92,7 +89,7 @@ class SongsHandler {
       const response = h.response({
         status: 'error',
         message: 'Server error, coba lagi beberapa saat.',
-        });
+      });
       response.code(500);
       console.error(error);
       return response;
