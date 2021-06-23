@@ -20,6 +20,7 @@
   "homepage": "https://github.com/fhyfr/open-music-back-end#readme",
   "dependencies": {
     "@hapi/hapi": "^20.1.4",
+    "bcrypt": "^5.0.1",
     "dotenv": "^10.0.0",
     "joi": "^17.4.0",
     "nanoid": "^2.1.8",

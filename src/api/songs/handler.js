@@ -1,5 +1,4 @@
 const UserError = require('../../exceptions/UserError');
-const { mapSongs } = require('../../utils/index')
 
 class SongsHandler {
   constructor(service, validator) {
@@ -53,8 +52,7 @@ class SongsHandler {
   }
 
   async getSongsHandler() {
-    const result = await this._service.getSongs();
-    const songs = result.map(mapSongs);
+    const songs = await this._service.getSongs();
 
     return {
       status: 'success',
