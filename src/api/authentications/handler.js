@@ -1,4 +1,4 @@
-const UserError = require("../../exceptions/UserError");
+const errorHandler = require("../../exceptions/ErrorHandler");
 
 class AuthenticationsHandler {
   constructor(authenticationsService, usersService, tokenManager, validator) {
@@ -37,24 +37,7 @@ class AuthenticationsHandler {
       return response;
 
     } catch (error) {
-      if(error instanceof UserError) {
-        const response = h.response ({
-          status: 'fail',
-          message: error.message,
-        });
-
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // server error
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
+      return errorHandler(error, h);
     }
   }
 
@@ -75,24 +58,7 @@ class AuthenticationsHandler {
         },
       };
     } catch (error) {
-      if(error instanceof UserError) {
-        const response = h.response ({
-          status: 'fail',
-          message: error.message,
-        });
-
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // server error
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
+      return errorHandler(error, h);
     }
   }
 
@@ -110,24 +76,7 @@ class AuthenticationsHandler {
       };
       
     } catch (error) {
-      if(error instanceof UserError) {
-        const response = h.response ({
-          status: 'fail',
-          message: error.message,
-        });
-
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // server error
-      const response = h.response({
-        status: 'error',
-        message: 'Maaf, terjadi kegagalan pada server kami.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
+      return errorHandler(error, h);
     }
   }
 }

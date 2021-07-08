@@ -1,4 +1,4 @@
-const UserError = require('../../exceptions/UserError');
+const errorHandler = require('../../exceptions/ErrorHandler');
 
 class UsersHandler {
   constructor(service, validator) {
@@ -25,24 +25,7 @@ class UsersHandler {
       response.code(201);
       return response;
     } catch (error) {
-      if(error instanceof UserError) {
-        const response = h.response({
-          status: 'fail',
-          message: error.message,
-        });
-        console.error(error);
-        response.code(error.statusCode);
-        return response;
-      }
-
-      // server error
-      const response = h.response({
-        status: 'error',
-        message: 'Server error, coba lagi beberapa saat.',
-      });
-      response.code(500);
-      console.error(error);
-      return response;
+      return errorHandler(error, h);
     }
   }
 }
