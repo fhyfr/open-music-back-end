@@ -13,7 +13,7 @@ class UsersService {
     await this.verifyNewUsername(username);
 
     const id = `user-${nanoid(16)}`;
-    const encryptedPassword = bcrypt.hash(password, 10);
+    const encryptedPassword = await bcrypt.hash(password, 10);
     const query = {
       text: 'INSERT INTO users VALUES($1, $2, $3, $4) RETURNING id',
       values: [id, username, encryptedPassword, fullname],
@@ -42,6 +42,7 @@ class UsersService {
   }
 
   async verifyUserCredential(username, password) {
+    
     const query = {
       text: 'SELECT id, password FROM users WHERE username=$1',
       values: [username],
@@ -59,6 +60,7 @@ class UsersService {
     if(!matchPassword) {
       throw new AuthenticationsError('Kredensial yang Anda berikan salah');
     }
+
 
     return id;
   }

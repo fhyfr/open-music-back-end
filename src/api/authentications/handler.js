@@ -15,7 +15,7 @@ class AuthenticationsHandler {
   async postAuthenticationHandler(request, h) {
     try {
       this._validator.validatePostAuthenticationPayload(request.payload);
-      
+
       const { username, password } = request.payload;
       const id = await this._usersService.verifyUserCredential(username, password);
 
@@ -30,7 +30,7 @@ class AuthenticationsHandler {
         data: {
           accessToken,
           refreshToken,
-        }
+        },
       });
 
       response.code(201);
