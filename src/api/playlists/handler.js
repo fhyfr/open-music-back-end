@@ -31,6 +31,22 @@ class PlaylistsHandler {
       return errorHandler(error, h);
     }
   }
+
+  async getPlaylistsHandler(request, h) {
+    try {
+      const { id: owner } = request.auth.credentials;
+      const playlists = await this._playlistsService.getPlaylists(owner);
+
+      return {
+        status: 'success',
+        data: {
+          playlists,
+        },
+      };
+    } catch (error) {
+      return errorHandler(error, h);
+    }
+  }
 }
 
 module.exports = PlaylistsHandler;

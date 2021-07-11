@@ -9,7 +9,6 @@ class PlaylistsService {
   }
 
   async addPlaylist(name, owner) {
-    console.log(owner);
     const id = `playlist-${nanoid(16)}`;
 
     const query = {
@@ -24,6 +23,17 @@ class PlaylistsService {
     }
 
     return result.rows[0].id;
+  }
+
+  async getPlaylists(owner) {
+    const query = {
+      text: 'SELECT playlists.id, playlists.name, users.username FROM playlists INNER JOIN users ON playlists.owner = users.id WHERE playlists.owner = $1',
+      values: [owner],
+    }
+
+    const result = await this._pool.query(query);
+
+    return result.rows;
   }
 }
 
