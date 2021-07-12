@@ -6,6 +6,8 @@ class PlaylistsHandler {
     this._validator = validator;
 
     this.postPlaylistHandler = this.postPlaylistHandler.bind(this);
+    this.getPlaylistsHandler = this.getPlaylistsHandler.bind(this);
+    this.deletePlaylistHandler = this.deletePlaylistHandler.bind(this);
   }
 
   async postPlaylistHandler(request, h) {
@@ -43,6 +45,23 @@ class PlaylistsHandler {
           playlists,
         },
       };
+    } catch (error) {
+      return errorHandler(error, h);
+    }
+  }
+
+  async deletePlaylistHandler(request, h) {
+    try {
+      const { id: owner } = request.auth.credentials;
+      const { playlistId } = request.params;
+      
+      await this._playlistsService.deletePlaylists(playlistId, owner);
+
+      return {
+        status: 'success',
+        message: 'Playlist berhasil dihapus',
+      };
+
     } catch (error) {
       return errorHandler(error, h);
     }
