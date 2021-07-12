@@ -56,6 +56,27 @@ class PlaylistsService {
     }
   }
 
+  async addSongToPlaylist({playlistId, owner, songId  }) {
+    // check playlist if exist
+    await this.checkPlaylist(playlistId);
+
+    // verify playlist owner
+    await this.verifyPlaylistOwner(playlistId, owner);
+    
+    const id = `playlistsongs-${nanoid(16)}`;
+    const query = {
+      text: 'INSERT INTO playlistsongs VALUES( $1, $2, $3) RETURNING id',
+      values: [id, playlistId, songId],
+    };
+    const result = await this._pool.query(query);
+
+    if(!result.rows.length) {
+      throw InvariantError('Gagal menambahkan lagu ke playlist');
+    }
+
+    return result.rows[0].id;
+  }
+
   async verifyPlaylistOwner(playlistId, owner) {
     const query = {
       text: 'SELECT * FROM playlists WHERE id=$1 AND owner=$2',
@@ -65,7 +86,7 @@ class PlaylistsService {
     const result = await this._pool.query(query);
 
     if(!result.rows.length) {
-      throw new ForbiddenError('Gagal menghapus. Anda tidak berhak mengakses playlist tersebut');
+      throw new ForbiddenError('Anda tidak berhak mengakses playlist tersebut');
     }
   }
 
@@ -78,7 +99,7 @@ class PlaylistsService {
     const result = await this._pool.query(query);
 
     if(!result.rows.length) {
-      throw new NotFoundError('Gagal menghapus. Playlist tidak ditemukan')
+      throw new NotFoundError('Playlist tidak ditemukan')
     }
   }
 }
