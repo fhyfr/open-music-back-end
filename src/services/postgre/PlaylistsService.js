@@ -1,3 +1,4 @@
+const { compareSync } = require("bcrypt");
 const nanoid = require("nanoid");
 const { Pool } = require("pg");
 const ForbiddenError = require("../../exceptions/ForbiddenError");
@@ -56,7 +57,7 @@ class PlaylistsService {
     }
   }
 
-  async addSongToPlaylist({playlistId, owner, songId  }) {
+  async addSongToPlaylist({ playlistId, owner, songId  }) {
     // check playlist if exist
     await this.checkPlaylist(playlistId);
 
@@ -92,6 +93,25 @@ class PlaylistsService {
     const result = await this._pool.query(query);
 
     return result.rows;
+  }
+
+  async deleteSongsFromPlaylist({ playlistId, owner, songId }) {
+    // check playlist if exist
+    await this.checkPlaylist(playlistId);
+    
+    // verify playlist owner
+    await this.verifyPlaylistOwner(playlistId, owner);
+
+    const query = {
+      text: 'DELETE FROM playlistsongs WHERE playlist_id=$1 AND song_id=$2',
+      values: [playlistId, songId],
+    };
+
+    const result = await this._pool.query(query);
+
+    if (!result.rowCount) {
+      throw new InvariantError('Gagal menghapus lagu dari playlist');
+    }
   }
 
   async verifyPlaylistOwner(playlistId, owner) {
