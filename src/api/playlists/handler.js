@@ -9,6 +9,7 @@ class PlaylistsHandler {
     this.getPlaylistsHandler = this.getPlaylistsHandler.bind(this);
     this.deletePlaylistHandler = this.deletePlaylistHandler.bind(this);
     this.postSongToPlaylistHandler = this.postSongToPlaylistHandler.bind(this);
+    this.getSongsFromPlaylistHandler = this.getSongsFromPlaylistHandler.bind(this);
   }
 
   async postPlaylistHandler(request, h) {
@@ -90,6 +91,24 @@ class PlaylistsHandler {
       return errorHandler(error, h);
     }
   }
+
+  async getSongsFromPlaylistHandler(request, h) {
+    try {
+      const {id: owner} = request.auth.credentials;
+      const { playlistId } = request.params;
+
+      const songs = await this._playlistsService.getSongsFromPlaylist(playlistId, owner);
+
+      return {
+        status: 'success',
+        data: {
+          songs,
+        }
+      };
+    } catch (error) {
+      return errorHandler(error, h);
+    }
+  } 
 }
 
 module.exports = PlaylistsHandler;
