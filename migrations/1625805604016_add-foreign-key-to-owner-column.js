@@ -4,5 +4,6 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
+  // drop constraint foreign key from owner
   pgm.dropConstraint('playlists', 'fk_playlists.owner_users.id');
 };

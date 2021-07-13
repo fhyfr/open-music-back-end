@@ -18,6 +18,6 @@ const errorHandler = (error, h) => {
   });
   response.code(500);
   return response;
-}
+};
 
 module.exports = errorHandler;

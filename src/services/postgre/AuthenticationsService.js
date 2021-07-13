@@ -1,9 +1,9 @@
-const { Pool } = require("pg");
-const InvariantError = require("../../exceptions/InvariantError");
+const { Pool } = require('pg');
+const InvariantError = require('../../exceptions/InvariantError');
 
 class AuthenticationsService {
   constructor() {
-    this._pool = new Pool();
+    this.pool = new Pool();
   }
 
   async addRefreshToken(token) {
@@ -12,7 +12,7 @@ class AuthenticationsService {
       values: [token],
     };
 
-    await this._pool.query(query);
+    await this.pool.query(query);
   }
 
   async verifyRefreshToken(token) {
@@ -21,20 +21,20 @@ class AuthenticationsService {
       values: [token],
     };
 
-    const result = await this._pool.query(query);
+    const result = await this.pool.query(query);
 
-    if(!result.rows.length) {
+    if (!result.rows.length) {
       throw new InvariantError('Refresh token tidak valid');
     }
   }
-  
+
   async deleteRefreshToken(token) {
     const query = {
       text: 'DELETE FROM authentications WHERE token=$1',
       values: [token],
     };
 
-    await this._pool.query(query);
+    await this.pool.query(query);
   }
 }
 

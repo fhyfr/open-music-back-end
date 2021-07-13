@@ -1,4 +1,4 @@
-const UserError = require("./UserError");
+const UserError = require('./UserError');
 
 class ForbiddenError extends UserError {
   constructor(message) {

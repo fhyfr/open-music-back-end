@@ -1,4 +1,4 @@
-const UserError = require("./UserError");
+const UserError = require('./UserError');
 
 class InvariantError extends UserError {
   constructor(message) {
@@ -7,4 +7,4 @@ class InvariantError extends UserError {
   }
 }
 
- module.exports = InvariantError;
+module.exports = InvariantError;

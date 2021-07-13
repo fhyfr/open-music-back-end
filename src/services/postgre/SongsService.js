@@ -1,15 +1,17 @@
-const nanoid  = require("nanoid");
-const { Pool } = require("pg");
-const InvariantError = require("../../exceptions/InvariantError");
-const NotFoundError = require("../../exceptions/NotFoundError");
-const { mapGetSongById, mapGetSongs } = require("../../utils");
+const nanoid = require('nanoid');
+const { Pool } = require('pg');
+const InvariantError = require('../../exceptions/InvariantError');
+const NotFoundError = require('../../exceptions/NotFoundError');
+const { mapGetSongById, mapGetSongs } = require('../../utils');
 
 class SongsService {
   constructor() {
-    this._pool = new Pool();
+    this.pool = new Pool();
   }
 
-  async addSong({ title, year, performer, genre, duration }) {
+  async addSong({
+    title, year, performer, genre, duration,
+  }) {
     const uniqueId = nanoid(16);
     const id = `song-${uniqueId}`;
     const insertedAt = new Date().toISOString();
@@ -19,9 +21,9 @@ class SongsService {
       values: [id, title, year, performer, genre, duration, insertedAt],
     };
 
-    const result = await this._pool.query(query);
+    const result = await this.pool.query(query);
 
-    if(!result.rows[0].id) {
+    if (!result.rows[0].id) {
       throw new InvariantError('Lagu gagal ditambahkan');
     }
 
@@ -29,7 +31,7 @@ class SongsService {
   }
 
   async getSongs() {
-    const result = await this._pool.query('SELECT * FROM songs');
+    const result = await this.pool.query('SELECT * FROM songs');
 
     return result.rows.map(mapGetSongs);
   }
@@ -40,27 +42,27 @@ class SongsService {
       values: [id],
     };
 
-    const result = await this._pool.query(query);
+    const result = await this.pool.query(query);
 
-    if(!result.rows.length) {
+    if (!result.rows.length) {
       throw new NotFoundError('Lagu tidak ditemukan');
     }
 
     return result.rows.map(mapGetSongById)[0];
   }
 
-  async editSongById(id, { title, year, performer, genre, duration }) {
+  async editSongById(id, {
+    title, year, performer, genre, duration,
+  }) {
     const updatedAt = new Date().toISOString();
     const query = {
       text: 'UPDATE songs SET title=$1, year=$2, performer=$3, genre=$4, duration=$5, updated_at=$6 WHERE id=$7 RETURNING id',
       values: [title, year, performer, genre, duration, updatedAt, id],
     };
 
-    const result = await this._pool.query(query);
+    const result = await this.pool.query(query);
 
-    console.log(result);
-
-    if(!result.rowCount) {
+    if (!result.rowCount) {
       throw new NotFoundError('Gagal memperbarui lagu. Id tidak ditemukan');
     }
   }
@@ -71,11 +73,9 @@ class SongsService {
       values: [id],
     };
 
-    const result = await this._pool.query(query);
+    const result = await this.pool.query(query);
 
-    console.log(result);
-
-    if(!result.rowCount) {
+    if (!result.rowCount) {
       throw new NotFoundError('Gagal menghapus lagu. Id tidak ditemukan');
     }
   }

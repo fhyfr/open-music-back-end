@@ -1,15 +1,15 @@
-const nanoid = require("nanoid");
-const bcrypt = require("bcrypt");
-const { Pool } = require("pg");
+const nanoid = require('nanoid');
+const bcrypt = require('bcrypt');
+const { Pool } = require('pg');
 const InvariantError = require('../../exceptions/InvariantError');
 const AuthenticationsError = require('../../exceptions/AuthenticationsError');
 
 class UsersService {
   constructor() {
-    this._pool = new Pool();
+    this.pool = new Pool();
   }
 
-  async addUser({username, password, fullname}) {
+  async addUser({ username, password, fullname }) {
     await this.verifyNewUsername(username);
 
     const id = `user-${nanoid(16)}`;
@@ -17,11 +17,11 @@ class UsersService {
     const query = {
       text: 'INSERT INTO users VALUES($1, $2, $3, $4) RETURNING id',
       values: [id, username, encryptedPassword, fullname],
-    }
+    };
 
-    const result = await this._pool.query(query);
+    const result = await this.pool.query(query);
 
-    if(!result.rows.length) {
+    if (!result.rows.length) {
       throw new InvariantError('Gagal menambahkan user');
     }
 
@@ -34,33 +34,31 @@ class UsersService {
       values: [username],
     };
 
-    const result = await this._pool.query(query);
+    const result = await this.pool.query(query);
 
-    if(result.rows.length > 0) {
+    if (result.rows.length > 0) {
       throw new InvariantError('Gagal menambahkan user. Username sudah digunakan');
     }
   }
 
   async verifyUserCredential(username, password) {
-    
     const query = {
       text: 'SELECT id, password FROM users WHERE username=$1',
       values: [username],
     };
 
-    const result = await this._pool.query(query);
+    const result = await this.pool.query(query);
 
-    if(!result.rows.length) {
+    if (!result.rows.length) {
       throw new AuthenticationsError('Kredensial yang Anda berikan salah');
     }
 
     const { id, password: encryptedPassword } = result.rows[0];
     const matchPassword = await bcrypt.compare(password, encryptedPassword);
-    
-    if(!matchPassword) {
+
+    if (!matchPassword) {
       throw new AuthenticationsError('Kredensial yang Anda berikan salah');
     }
-
 
     return id;
   }

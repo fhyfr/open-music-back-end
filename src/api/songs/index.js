@@ -1,6 +1,5 @@
-const SongsHandler = require("./handler");
-const routes = require("./routes")
-
+const SongsHandler = require('./handler');
+const routes = require('./routes');
 
 module.exports = {
   name: 'songs',
@@ -9,4 +8,4 @@ module.exports = {
     const songsHandler = new SongsHandler(service, validator);
     server.route(routes(songsHandler));
   },
-}
+};
