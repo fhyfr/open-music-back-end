@@ -12,12 +12,4 @@ const mapGetSongById = ({
   updatedAt: updated_at,
 });
 
-const mapGetSongs = (
-  song,
-) => ({
-  id: song.id,
-  title: song.title,
-  performer: song.performer,
-});
-
-module.exports = { mapGetSongById, mapGetSongs };
+module.exports = { mapGetSongById };

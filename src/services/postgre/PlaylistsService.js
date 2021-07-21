@@ -20,7 +20,7 @@ class PlaylistsService {
 
     const result = await this.pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new InvariantError('Playlist gagal ditambahkan');
     }
 
@@ -63,7 +63,7 @@ class PlaylistsService {
 
     const result = await this.pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw InvariantError('Gagal menambahkan lagu ke playlist');
     }
 
@@ -102,7 +102,7 @@ class PlaylistsService {
 
     const result = await this.pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFoundError('Playlist tidak ditemukan');
     }
 

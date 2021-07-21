@@ -21,7 +21,7 @@ class UsersService {
 
     const result = await this.pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new InvariantError('Gagal menambahkan user');
     }
 
@@ -36,7 +36,7 @@ class UsersService {
 
     const result = await this.pool.query(query);
 
-    if (result.rows.length > 0) {
+    if (result.rowCount > 0) {
       throw new InvariantError('Gagal menambahkan user. Username sudah digunakan');
     }
   }
@@ -49,7 +49,7 @@ class UsersService {
 
     const result = await this.pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new AuthenticationsError('Kredensial yang Anda berikan salah');
     }
 
