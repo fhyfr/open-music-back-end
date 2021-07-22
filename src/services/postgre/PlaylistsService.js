@@ -5,9 +5,10 @@ const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
 
 class PlaylistsService {
-  constructor(collaborationsService) {
+  constructor(collaborationsService, cacheService) {
     this.pool = new Pool();
     this.collaborationsService = collaborationsService;
+    this.cacheService = cacheService;
   }
 
   async addPlaylist(name, owner) {
@@ -54,6 +55,8 @@ class PlaylistsService {
     }
   }
 
+  // song to playlist
+
   async addSongToPlaylist(playlistId, songId) {
     const id = `playlistsongs-${nanoid(16)}`;
     const query = {
@@ -67,18 +70,27 @@ class PlaylistsService {
       throw InvariantError('Gagal menambahkan lagu ke playlist');
     }
 
+    await this.cacheService.delete(`playlists:${playlistId}`);
+
     return result.rows[0].id;
   }
 
   async getSongsFromPlaylist(playlistId) {
-    const query = {
-      text: 'SELECT songs.id, songs.title, songs.performer FROM songs INNER JOIN playlistsongs ON songs.id = playlistsongs.song_id WHERE playlist_id=$1',
-      values: [playlistId],
-    };
+    try {
+      const result = await this.cacheService.get(`playlists:${playlistId}`);
+      return JSON.parse(result);
+    } catch (error) {
+      const query = {
+        text: 'SELECT songs.id, songs.title, songs.performer FROM songs INNER JOIN playlistsongs ON songs.id = playlistsongs.song_id WHERE playlist_id=$1',
+        values: [playlistId],
+      };
 
-    const result = await this.pool.query(query);
+      const result = await this.pool.query(query);
 
-    return result.rows;
+      await this.cacheService.set(`playlists:${playlistId}`, JSON.stringify(result.rows));
+
+      return result.rows;
+    }
   }
 
   async deleteSongsFromPlaylist(playlistId, songId) {
@@ -92,6 +104,8 @@ class PlaylistsService {
     if (!result.rowCount) {
       throw new InvariantError('Gagal menghapus lagu dari playlist');
     }
+
+    await this.cacheService.delete(`playlists:${playlistId}`);
   }
 
   async verifyPlaylistOwner(playlistId, owner) {
