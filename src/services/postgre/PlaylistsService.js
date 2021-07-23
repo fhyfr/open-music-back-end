@@ -40,7 +40,6 @@ class PlaylistsService {
   }
 
   async deletePlaylists(playlistId, owner) {
-    // verify playlist owner
     await this.verifyPlaylistOwner(playlistId, owner);
 
     const query = {
@@ -55,7 +54,7 @@ class PlaylistsService {
     }
   }
 
-  // song to playlist
+  // song to playlist function
 
   async addSongToPlaylist(playlistId, songId) {
     const id = `playlistsongs-${nanoid(16)}`;

@@ -1,6 +1,6 @@
 const errorHandler = require('../../exceptions/ErrorHandler');
 
-class ExportsSongsHandler {
+class ExportSongsHandler {
   constructor(service, playlistService, validator) {
     this.service = service;
     this.playlistService = playlistService;
@@ -26,7 +26,6 @@ class ExportsSongsHandler {
         status: 'success',
         message: 'Permintaan Anda sedang kami proses',
       });
-
       response.code(201);
       return response;
     } catch (error) {
@@ -35,4 +34,4 @@ class ExportsSongsHandler {
   }
 }
 
-module.exports = ExportsSongsHandler;
+module.exports = ExportSongsHandler;

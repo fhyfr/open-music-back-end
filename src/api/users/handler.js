@@ -21,7 +21,6 @@ class UsersHandler {
           userId,
         },
       });
-
       response.code(201);
       return response;
     } catch (error) {

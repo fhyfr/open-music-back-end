@@ -15,10 +15,10 @@ class SongsHandler {
   async postSongHandler(request, h) {
     try {
       this.validator.validateSongPayload(request.payload);
+
       const {
         title, year, performer, genre, duration,
       } = request.payload;
-
       const songId = await this.service.addSong({
         title, year, performer, genre, duration,
       });
@@ -30,7 +30,6 @@ class SongsHandler {
           songId,
         },
       });
-
       response.code(201);
       return response;
     } catch (error) {
@@ -57,6 +56,7 @@ class SongsHandler {
     try {
       const { songId } = request.params;
       const song = await this.service.getSongById(songId);
+
       return {
         status: 'success',
         data: {
@@ -71,6 +71,7 @@ class SongsHandler {
   async putSongByIdHandler(request, h) {
     try {
       this.validator.validateSongPayload(request.payload);
+
       const {
         title, year, performer, genre, duration,
       } = request.payload;
@@ -92,6 +93,7 @@ class SongsHandler {
   async deleteSongByIdHandler(request, h) {
     try {
       const { songId } = request.params;
+
       await this.service.deleteSongById(songId);
 
       return {

@@ -13,7 +13,7 @@ const ProducerService = {
 
     setTimeout(() => {
       connection.close();
-    }, 600);
+    }, 1000);
   },
 };
 

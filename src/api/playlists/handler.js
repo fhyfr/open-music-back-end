@@ -19,7 +19,6 @@ class PlaylistsHandler {
 
       const { name } = request.payload;
       const { id: owner } = request.auth.credentials;
-
       const playlistId = await this.playlistsService.addPlaylist(name, owner);
 
       const response = h.response({
@@ -83,7 +82,6 @@ class PlaylistsHandler {
         status: 'success',
         message: 'Lagu berhasil ditambahkan ke playlist',
       });
-
       response.code(201);
       return response;
     } catch (error) {

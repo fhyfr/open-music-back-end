@@ -1,6 +1,6 @@
 const UserError = require('./UserError');
 
-// bundle error hanlder
+// bundle error handLer
 const errorHandler = (error, h) => {
   if (error instanceof UserError) {
     const response = h.response({
@@ -14,7 +14,7 @@ const errorHandler = (error, h) => {
   // server error
   const response = h.response({
     status: 'error',
-    message: 'Maaf, terjadi kegagalan pada server kami.',
+    message: 'Mohon maaf, terjadi kegagalan pada server kami.',
   });
   response.code(500);
   return response;

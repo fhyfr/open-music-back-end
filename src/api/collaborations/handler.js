@@ -27,7 +27,6 @@ class CollaborationsHandler {
           collaborationId,
         },
       });
-
       response.code(201);
       return response;
     } catch (error) {
@@ -43,7 +42,6 @@ class CollaborationsHandler {
       const { playlistId, userId } = request.payload;
 
       await this.playlistsService.verifyPlaylistOwner(playlistId, owner);
-
       await this.collaborationsService.deleteCollaboration(playlistId, userId);
 
       return {

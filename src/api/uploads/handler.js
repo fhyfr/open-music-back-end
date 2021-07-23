@@ -23,7 +23,6 @@ class UploadPicturesHandler {
           pictureUrl: `http://${process.env.HOST}:${process.env.PORT}/upload/images/${fileName}`,
         },
       });
-
       response.code(201);
       return response;
     } catch (error) {
