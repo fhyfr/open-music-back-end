@@ -3,6 +3,7 @@ const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
 const Inert = require('@hapi/inert');
 const path = require('path');
+const UserError = require('./exceptions/UserError');
 
 // songs
 const songs = require('./api/songs');
@@ -49,8 +50,13 @@ const init = async () => {
   const songsService = new SongsService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
-  const playlistsService = new PlaylistsService(collaborationsService, cacheService);
-  const storageService = new StorageService(path.resolve(__dirname, 'api/uploads/file/images'));
+  const playlistsService = new PlaylistsService(
+    collaborationsService,
+    cacheService,
+  );
+  const storageService = new StorageService(
+    path.resolve(__dirname, 'api/uploads/file/images'),
+  );
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -144,6 +150,29 @@ const init = async () => {
       },
     },
   ]);
+
+  server.ext('onPreResponse', (request, h) => {
+    // mendapatkan konteks response dari request
+
+    const { response } = request;
+
+    if (response instanceof UserError) {
+      // membuat response baru dari response toolkit sesuai kebutuhan error handling
+
+      const newResponse = h.response({
+        status: 'fail',
+        message: response.message,
+      });
+
+      newResponse.code(response.statusCode);
+
+      return newResponse;
+    }
+
+    // jika bukan ClientError, lanjutkan dengan response sebelumnya (tanpa terintervensi)
+
+    return response.continue || response;
+  });
 
   await server.start();
   // eslint-disable-next-line no-console
